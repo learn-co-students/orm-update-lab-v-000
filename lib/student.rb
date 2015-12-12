@@ -27,9 +27,7 @@ class Student
 
 
   def self.drop_table
-    sql = <<-SQL 
-    DROP TABLE students 
-    SQL
+    sql = "DROP TABLE IF EXISTS students" 
     DB[:conn].execute(sql)
   end
 
@@ -53,7 +51,6 @@ class Student
 
   def self.new_from_db(row)
     new_song = self.new(row[1],row[2],row[0])
-    new_song
   end
  
   def self.find_by_name(name)
@@ -62,14 +59,19 @@ class Student
     WHERE students.name = ?
     LIMIT 1
     SQL
-    DB[:conn].execute(sql, name).collect do |student|
-      self.new_from_db(student)
+    DB[:conn].execute(sql, name).collect do |row|
+      #uses row array to create student object
+      self.new_from_db(row)
     end.first
   end
 
   def update
-    save
-  end
-
+    sql = <<-sql
+      UPDATE students
+      SET name = ?, grade = ?
+      WHERE id = ?
+    sql
+    DB[:conn].execute(sql,self.name,self.grade,self.id)
+  end 
 
 end
