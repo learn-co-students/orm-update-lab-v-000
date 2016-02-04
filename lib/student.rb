@@ -2,9 +2,10 @@ require_relative "../config/environment.rb"
 
 class Student
 
-  attr_accessor :name, :grade, :id
+  attr_accessor :name, :grade
+  attr_reader :id
 
-  def initialize(name=nil, grade=nil, id=nil)
+  def initialize(id=nil, name, grade)
     @name=name
     @grade=grade
     @id=id
@@ -21,9 +22,7 @@ class Student
   end
 
    def self.drop_table
-    sql = <<-SQL
-      DROP TABLE students;
-    SQL
+    sql = "DROP TABLE students;"
     DB[:conn].execute(sql)
   end
 
@@ -38,33 +37,22 @@ class Student
   end
 
   def update
-    sql = "UPDATE students SET name =?, grade = ? WHERE id = ?"
+    sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?"
     DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
 
   def self.find_by_name(name)
-    sql = "SELECT * FROM students WHERE name = ?"
+    sql = "SELECT * FROM students WHERE name = ? LIMIT 1"
     DB[:conn].execute(sql, name).map {|row| self.new_from_db(row)}.first
   end
-
-
 
   def self.create(name:, grade:)
     student = Student.new(name, grade)
     student.save
-    student
   end
 
   def self.new_from_db(row)
-    new_student=self.new
-    new_student.id=row[0]
-    new_student.name=row[1]
-    new_student.grade=row[2]
-    new_student
+    new_student=self.new(row[0],row[1], row[2])
   end
-
-  # Remember, you can access your database connection anywhere in this class
-  #  with DB[:conn]  
   
- 
 end
