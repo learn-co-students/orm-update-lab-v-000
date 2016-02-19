@@ -21,6 +21,7 @@ class Student
         grade INTEGER
       );
     SQL
+
     DB[:conn].execute(sql)
   end
 
@@ -28,15 +29,21 @@ class Student
     sql = <<-SQL
       DROP TABLE students;
     SQL
+
     DB[:conn].execute(sql)
   end
 
   def save
-    sql = <<-SQL
-      INSERT INTO students (name, grade) VALUES (?, ?);
-    SQL
-    DB[:conn].execute(sql, self.name, self.grade)
-    self.id = DB[:conn].execute("SELECT last_insert_rowid() FROM students;")[0][0]
+    if self.id
+      self.update
+    else
+      sql = <<-SQL
+        INSERT INTO students (name, grade) VALUES (?, ?);
+      SQL
+
+      DB[:conn].execute(sql, self.name, self.grade)
+      self.id = DB[:conn].execute("SELECT last_insert_rowid() FROM students;")[0][0]
+    end
   end
 
   def self.create(name:, grade:)
@@ -56,17 +63,21 @@ class Student
       SELECT *
       FROM students
       WHERE name = ?
+      LIMIT 1;
     SQL
-    row = DB[:conn].execute(sql, name)[0]
-    self.new_from_db(row)
+
+    DB[:conn].execute(sql, name).map do |row|
+      self.new_from_db(row)
+    end.first
   end
 
   def update
     sql = <<-SQL
       UPDATE students
       SET name = ?, grade = ?
-      WHERE id = ?
+      WHERE id = ?;
     SQL
+
     DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
 
