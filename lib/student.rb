@@ -37,12 +37,11 @@ class Student
             WHERE students.name = name
           SQL
     student_info = DB[:conn].execute(sql)[0]
-    student = Student.new(
+    return Student.new(
       name = student_info[1],
       grade = student_info[2],
       id = student_info[0]
     )
-    student
   end
 
   def save
