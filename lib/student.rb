@@ -65,6 +65,14 @@ class Student
     self.new(result[0], result[1], result[2])
   end
 
+  # updates the record associated with a given instance
+  def update
+    sql = <<-SQL
+      UPDATE SET name = ?, grade = ? WHERE id = ?
+    SQL
+
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
+  end
 
 
 end
