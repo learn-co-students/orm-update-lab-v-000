@@ -8,7 +8,7 @@ class Student
   attr_accessor :name, :grade
   attr_reader :id
 
-  def initialize(name, grade, id=nil)
+  def initialize(id=nil, name, grade)
     @id = id
     @name = name
     @grade = grade
@@ -54,16 +54,15 @@ class Student
 
   def self.new_from_db(row)
     # create a new Student object given a row from the database
-    new_student = self.new
-    new_student.id = row[0]
-    new_student.name = row[1]
-    new_student.grade = row[2]
-    new_student
+    id = row[0]
+    name = row[1]
+    grade = row[2]
+    self.new(id, name, grade)
   end
 
   def self.all
     # retrieve all the rows from the "Students" database
-    # remember each row should be a new instance of the Student class
+    # remember each row should be a nexw instance of the Student class
     sql = <<-SQL
       SELECT *
       FROM students
