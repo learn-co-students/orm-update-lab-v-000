@@ -16,10 +16,10 @@ DB = {:conn => SQLite3::Database.new("db/students.db")}
 
 In your `Student` class, you can access the database connection via: `DB[:conn]`
 
-You may need to manually create the database before running tests.
+You may need to manually create the database before running tests. You can execute the SQL code you create for your `#create_table` method on a single line wrapped in quotes after the `sqlite3` command and the location of the database.
 ```
 $ mkdir db
-$ sqlite3 db/students.db "CREATE TABLE students(id INTEGER PRIMARY KEY);"
+$ sqlite3 db/students.db "CREATE TABLE students(...);"
 ```
 
 You'll be building the following methods:
