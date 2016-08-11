@@ -73,8 +73,9 @@ def self.find_by_name(student_name)
     WHERE name = ?
   SQL
 
-  result = DB[:conn].execute(sql, student_name)[0]
-  Student.new(result[0], result[1], result[2])
+  result = DB[:conn].execute(sql, student_name).map do |row|
+    self.new_from_db(row)
+  end
 end
 
 
