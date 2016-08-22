@@ -12,11 +12,7 @@ class Student
 
   def self.new_from_db(row)
     # create a new Student object given a row from the database
-    new_student = self.new  # self.new is the same as running Song.new
-    new_student.id = row[0]
-    new_student.name = row[1]
-    new_student.grade = row[2]
-    new_student  # return the newly created instance
+    new_student = self.new(row[1], row[2], row[0])
   end
 
   def self.all
@@ -47,6 +43,22 @@ class Student
     end.first
   end
 
+  def update
+    sql = <<-SQL
+      UPDATE students SET name = ?, grade = ? WHERE id = ?
+    SQL
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
+  end
+
+  def self.create(name, grade)
+    sql = <<-SQL
+      INSERT INTO students (name, grade)
+      VALUES (?, ?)
+    SQL
+    DB[:conn].execute(sql, name, grade)
+    @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
+  end
+
   def save
     if self.id
       self.update
@@ -70,18 +82,6 @@ class Student
     SQL
 
     DB[:conn].execute(sql)
-  end
-
-  def self.count_all_students_in_grade_9
-    sql = <<-SQL
-      SELECT *
-      FROM students
-      WHERE grade = 9
-    SQL
-
-    DB[:conn].execute(sql).map do |row|
-      self.new_from_db(row)
-    end
   end
 
   def self.drop_table
