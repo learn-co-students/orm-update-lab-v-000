@@ -4,7 +4,7 @@ require 'pry'
 class Student
   attr_accessor :name, :grade, :id
 
-  def initialize(name, grade, id: nil)
+  def initialize(name, grade, id = nil)
     @name = name
     @grade = grade
     @id = id
@@ -53,9 +53,7 @@ class Student
   end
 
   def self.new_from_db(row)
-    student = Student.new(row[1], row[2])
-    student.save
-    student
+    student = Student.new(row[1], row[2], row[0])
   end
 
   def self.find_by_name(name)
@@ -65,9 +63,8 @@ class Student
       WHERE name = ?
       LIMIT 1
     SQL
-    # binding.pry
     records = DB[:conn].execute(sql, name).map do |row|
       Student.new_from_db(row)
-    end.second
+    end.first
   end
 end
