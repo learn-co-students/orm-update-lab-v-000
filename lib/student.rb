@@ -68,6 +68,6 @@ class Student
     # binding.pry
     records = DB[:conn].execute(sql, name).map do |row|
       Student.new_from_db(row)
-    end.first
+    end.second
   end
 end
