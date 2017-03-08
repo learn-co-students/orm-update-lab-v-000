@@ -65,4 +65,9 @@ class Student
     self.new_from_db(new_student_data)
   end
 
+  def update
+    sql = "UPDATE students SET name = ?, grade = ?"
+    DB[:conn].execute(sql,self.name,self.grade)
+  end
+
 end
