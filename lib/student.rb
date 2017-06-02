@@ -1,5 +1,5 @@
 require_relative "../config/environment.rb"
-
+require "pry"
 class Student
 
   # Remember, you can access your database connection anywhere in this class
@@ -49,10 +49,7 @@ attr_reader :id
   end
 
   def self.new_from_db(row)
-    new_student = self.new
-    new_student.id = row[0]
-    new_student.name = row[1]
-    new_student.grade = row[2]
+    new_student = self.new(row[0],row[1],row[2])
     new_student
   end
   #       wrong number of arguments (given 0, expected 2..3)
