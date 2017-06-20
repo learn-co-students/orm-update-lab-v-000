@@ -2,7 +2,8 @@ require_relative "../config/environment.rb"
 require 'pry'
 
 class Student
-  attr_accessor :id, :name, :grade
+  attr_accessor :name, :grade
+  attr_reader :id
 
   def initialize(id = nil, name, grade)
     @name = name
@@ -38,7 +39,7 @@ class Student
 
       DB[:conn].execute(sql, self.name, self.grade)
       @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
-    end 
+    end
   end
 
   def self.create(name, grade)
