@@ -11,6 +11,17 @@ class Student
     @grade = grade
   end
 
+  def self.create(name, grade)
+    new_song = self.new(name, grade)
+    new_song.save
+    new_song
+  end
+
+  def self.new_from_db(row)
+    song = self.new(row[0], row[1], row[2])
+    song
+  end
+
   def self.create_table
     sql = <<-SQL
       CREATE TABLE IF NOT EXISTS students (
@@ -27,6 +38,25 @@ class Student
       DROP TABLE students
     SQL
     DB[:conn].execute(sql)
+  end
+
+  def self.find_by_name(name)
+    sql = <<-SQL
+      SELECT *
+      FROM students
+      WHERE name = ?
+    SQL
+
+    row = DB[:conn].execute(sql, name).flatten
+    self.new_from_db(row)
+  end
+
+  def update
+      sql = <<-SQL
+        UPDATE students SET name = ?, grade = ?
+        WHERE id = ?
+      SQL
+      DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
 
   def save
