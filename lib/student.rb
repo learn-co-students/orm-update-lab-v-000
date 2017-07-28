@@ -11,17 +11,6 @@ class Student
     @grade = grade
   end
 
-  def self.create(name, grade)
-    new_song = self.new(name, grade)
-    new_song.save
-    new_song
-  end
-
-  def self.new_from_db(row)
-    song = self.new(row[0], row[1], row[2])
-    song
-  end
-
   def self.create_table
     sql = <<-SQL
       CREATE TABLE IF NOT EXISTS students (
@@ -30,14 +19,38 @@ class Student
         grade TEXT
       )
     SQL
+
     DB[:conn].execute(sql)
   end
 
   def self.drop_table
-    sql = <<-SQL
-      DROP TABLE students
-    SQL
+    sql = "DROP TABLE students"
+
     DB[:conn].execute(sql)
+  end
+
+  def self.create(name, grade)
+    new_student = self.new(name, grade)
+    new_student.save
+    new_student
+  end
+
+  def save
+    if self.id
+      sql = "UPDATE students SET name = ?, grade = ?"
+    else
+      sql = <<-SQL
+        INSERT INTO students (name, grade)
+        VALUES (?, ?)
+      SQL
+    end
+
+    DB[:conn].execute(sql, self.name, self.grade)
+    @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students").flatten[0]
+  end
+
+  def self.new_from_db(row)
+    self.new(row[0], row[1], row[2])
   end
 
   def self.find_by_name(name)
@@ -45,31 +58,20 @@ class Student
       SELECT *
       FROM students
       WHERE name = ?
+      LIMIT 1
     SQL
 
-    row = DB[:conn].execute(sql, name).flatten
-    self.new_from_db(row)
+    DB[:conn].execute(sql, name).map do |row|
+      Student.new_from_db(row)
+    end.first
   end
 
   def update
-      sql = <<-SQL
-        UPDATE students SET name = ?, grade = ?
-        WHERE id = ?
-      SQL
-      DB[:conn].execute(sql, self.name, self.grade, self.id)
-  end
+    sql = <<-SQL
+      UPDATE students SET name = ?, grade = ?
+    SQL
 
-  def save
-    if self.id
-      DB[:conn].execute("UPDATE students SET name = ?, grade = ?", self.name, self.grade)
-    else
-      sql = <<-SQL
-        INSERT INTO students (name, grade)
-        VALUES (?, ?)
-      SQL
-      DB[:conn].execute(sql, self.name, self.grade)
-      self.id = DB[:conn].execute("SELECT last_insert_rowid() FROM students").flatten[0]
-    end
+    DB[:conn].execute(sql, self.name, self.grade)
   end
 
 end
