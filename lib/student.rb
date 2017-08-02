@@ -6,7 +6,7 @@ attr_accessor :name, :grade, :id
 
   # Remember, you can access your database connection anywhere in this class
   #  with DB[:conn]
-  def initialize(name=nil, grade=nil, id=nil)
+  def initialize(name, grade, id=nil)
     @name, @grade, @id = name, grade, id
   end
 
@@ -49,10 +49,10 @@ attr_accessor :name, :grade, :id
   end
 
   def self.new_from_db(row)
-    student = self.new
-    student.id = row[0]
-    student.name = row[1]
-    student.grade = row[2]
+    id = row[0]
+    name = row[1]
+    grade = row[2]
+    student = self.new(id,name,grade)
     student
   end
 
