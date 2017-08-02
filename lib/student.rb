@@ -6,7 +6,7 @@ attr_accessor :name, :grade, :id
 
   # Remember, you can access your database connection anywhere in this class
   #  with DB[:conn]
-  def initialize(name, grade, id=nil)
+  def initialize(id=nil, name, grade)
     @name, @grade, @id = name, grade, id
   end
 
@@ -15,7 +15,7 @@ attr_accessor :name, :grade, :id
       CREATE TABLE students (
         id PRIMAY KEY INTEGER,
         name TEXT,
-        grade INEGER
+        grade INTEGER
       )
     SQL
     DB[:conn].execute(sql)
@@ -52,8 +52,7 @@ attr_accessor :name, :grade, :id
     id = row[0]
     name = row[1]
     grade = row[2]
-    student = self.new(id,name,grade)
-    student
+    self.new(id,name,grade)
   end
 
   def self.find_by_name(name)
