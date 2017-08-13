@@ -18,7 +18,7 @@ class Student
     CREATE TABLE students (
       id INTEGER PRIMARY KEY,
       name TEXT,
-      grade INTEGER
+      grade TEXT
     )
     SQL
 
@@ -58,10 +58,23 @@ class Student
   end
 
   def self.find_by_name(name)
+    sql = <<-SQL
+    SELECT *
+    FROM students
+    WHERE name = ?
+    SQL
 
+    student = DB[:conn].execute(sql, name).flatten
+    self.new_from_db(student)
   end
 
-  def updates
+  def update
+    sql = <<-SQL
+    UPDATE students
+    SET name = ?, grade = ?
+    WHERE id = ?
+    SQL
+    DB[:conn].execute(sql, self.name, self.grade. self.id)
   end
 
 end
