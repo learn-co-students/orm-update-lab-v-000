@@ -33,6 +33,35 @@ class Student
     DB[:conn].execute(sql)
   end # drop_table
 
-  #def save
+  def save
+    if self.id
+      self.update
+    else
+      sql = <<-SQL
+      INSERT INTO students (name, grade)
+      VALUES (?, ?)
+      SQL
+      DB[:conn].execute(sql, self.name, self.grade)
+
+      @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
+    end
+  end # save
+
+  def self.create(name:, grade:)
+    new_student = Student.new(name, grade)
+    new_student.save
+    new_student
+  end
+
+  def self.new_from_db(row)
+    Student.new(row[0], row[1], row[2])
+  end
+
+  def self.find_by_name(name)
+
+  end
+
+  def updates
+  end
 
 end
