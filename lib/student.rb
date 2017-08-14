@@ -47,15 +47,15 @@ class Student
     end
   end # save
 
-  def self.create(name:, grade:)
+  def self.create(name, grade)
     new_student = Student.new(name, grade)
     new_student.save
     new_student
-  end
+  end # create
 
   def self.new_from_db(row)
     Student.new(row[0], row[1], row[2])
-  end
+  end # new_from_db
 
   def self.find_by_name(name)
     sql = <<-SQL
@@ -66,7 +66,7 @@ class Student
 
     student = DB[:conn].execute(sql, name).flatten
     self.new_from_db(student)
-  end
+  end # find_by_name
 
   def update
     sql = <<-SQL
@@ -74,7 +74,7 @@ class Student
     SET name = ?, grade = ?
     WHERE id = ?
     SQL
-    DB[:conn].execute(sql, self.name, self.grade. self.id)
-  end
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
+  end # update
 
 end
