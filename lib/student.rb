@@ -9,7 +9,7 @@ class Student
   attr_accessor :name, :grade
   attr_reader :id
 
-  def initialize(name, grade, id=nil)
+  def initialize(id=nil, name, grade)
     @name = name
     @grade = grade
     @id = id
@@ -61,7 +61,13 @@ class Student
    new_student
  end
 
- 
+ def self.find_by_name(name)
+   sql = <<-SQL
+   SELECT * FROM students WHERE name = ?;
+   SQL
+   data = DB[:conn].execute(sql, name)[0]
+   Student.new(data[0], data[1], data[2])
+ end
 
 
 end
