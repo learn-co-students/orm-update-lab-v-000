@@ -62,7 +62,7 @@ class Student
     id = student_array[0]
     name = student_array[1]
     grade = student_array[2]
-    self.create(name, grade)
+    self.new(name, grade, id)
   end
 
   def self.find_by_name(student_name)
@@ -71,24 +71,8 @@ class Student
       WHERE name = ?
       LIMIT 1
     SQL
-    # binding.pry
     student_array = DB[:conn].execute(sql, student_name).first #=> [1, "Josh", "9th"]
     self.new_from_db(student_array)
-    # josh = self.create(name, grade)
-    # binding.pry
-
   end
 
 end
-
-# def self.find_by_name(name)
-#   sql = <<-SQL
-#     SELECT * FROM students
-#     WHERE name = ?
-#     LIMIT 1
-#   SQL
-#
-#   DB[:conn].execute(sql,name).map do |row|
-#     self.new_from_db(row)
-#   end.first
-# end
