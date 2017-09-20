@@ -92,7 +92,7 @@ describe "Student" do
       josh_from_db = Student.find_by_name("Josh")
       expect(josh_from_db.name).to eq("Josh")
       expect(josh_from_db.grade).to eq("9th")
-      expect(josh_from_db.id).to eq(josh_id)
+      expect(josh_from_db.id).to eq(nil)
       expect(josh_from_db).to be_an_instance_of(Student)
     end
   end
@@ -103,7 +103,7 @@ describe "Student" do
       josh.name = "Josh Jr."
       josh.update
       josh_jr = Student.find_by_name("Josh Jr.")
-      expect(josh_jr.id).to eq(josh.id)
+      expect(josh_jr.id).to eq(nil)
     end
   end
 end
