@@ -5,10 +5,10 @@ class Student
   attr_reader :id
   # Remember, you can access your database connection anywhere in this class
   #  with DB[:conn]
-  def initialize(id = nil, name, grade)
-    @id = id
+  def initialize(name, grade, id = nil)
     self.name = name
     self.grade = grade
+    @id = id
   end
 
   def self.create_table
@@ -45,7 +45,7 @@ class Student
   end
 
   def self.new_from_db(row)
-    self.new(row[0], row[1], row[2])
+    self.new(row[1], row[2], row[0])
   end
 
   def self.find_by_name(name)
