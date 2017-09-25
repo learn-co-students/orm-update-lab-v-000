@@ -33,7 +33,7 @@ attr_reader :id
   end
 
   def save
-    if self.id
+    if self.id #if the instance has an id, then #update the instance 
       self.update
     else
       sql = <<-SQL
