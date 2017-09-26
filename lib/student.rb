@@ -1,4 +1,5 @@
 require_relative "../config/environment.rb"
+require 'pry'
 
 class Student
 
@@ -10,14 +11,34 @@ class Student
     @id = id
   end
 
-  def save
+  def self.all
     sql = <<-SQL
-      INSERT INTO students (name, grade)
-      VALUES (?, ?)
+      SELECT *
+      FROM students
     SQL
 
-    DB[:conn].execute(sql, self.name, self.grade)
-    @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
+    DB[:conn].execute(sql).map do |row|
+      self.new_from_db(row)
+    end
+  end
+
+  def self.create(name, grade, id = nil)
+    new_student = Student.new(name, grade)
+    new_student.save
+    # binding.pry
+  end
+
+  def save
+    if self.id
+      self.update
+    else
+      sql = <<-SQL
+        INSERT INTO students (name, grade)
+        VALUES (?, ?)
+      SQL
+      DB[:conn].execute(sql, self.name, self.grade)
+      @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
+    end
   end
 
   def self.create_table
@@ -37,22 +58,25 @@ class Student
     DB[:conn].execute(sql)
   end
 
-
-  def self.create
-  end
-
-  def new_from_db(row)
-    new_student = self.new
-    new_student.id = row[0]
-    new_student.name =  row[1]
-    new_student.grade = row[2]
+  def self.new_from_db(row)
+    id = row[0]
+    name = row[1]
+    grade = row[2]
+    new_student = self.new(name, grade, id)
     new_student
   end
 
-  def find_by_name
+  def self.find_by_name(name)
+    self.all.each do |student|
+      if student.name == name
+       return student
+      end
+    end
   end
 
   def update
+    sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?"
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
 
   # Remember, you can access your database connection anywhere in this class
