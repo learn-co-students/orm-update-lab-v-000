@@ -5,7 +5,7 @@ class Student
   attr_accessor :name, :grade, :id
 
   def initialize(id = nil, name, grade)
-    @id = id
+    @id = id #i left this as nil, which didn't make tests pass because if you're extracting from db this will override its id
     @name = name
     @grade = grade
   end
