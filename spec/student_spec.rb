@@ -1,4 +1,5 @@
 require "spec_helper"
+require 'pry'
 
 describe "Student" do
 
@@ -60,8 +61,10 @@ describe "Student" do
       jane = Student.new("Jane", "11th")
       jane.save
       jane_id = jane.id
+
       jane.name = "Jane Smith"
       jane.save
+
       jane_from_db = DB[:conn].execute("SELECT * FROM students WHERE id = ?", jane_id)
       expect(jane_from_db[0][1]).to eq("Jane Smith")
     end
@@ -88,6 +91,7 @@ describe "Student" do
   describe '.find_by_name' do
     it 'returns an instance of student that matches the name from the DB' do
       josh.save
+      
       josh_id = josh.id
       josh_from_db = Student.find_by_name("Josh")
       expect(josh_from_db.name).to eq("Josh")
