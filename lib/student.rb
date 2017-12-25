@@ -54,43 +54,23 @@ class Student
   end
 
   def self.new_from_db(row)
-    new_student = self.new
-    @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students").flatten[0]
-    new_student.name = row[1]
-    new_student.grade = row[2]
+    id = row[0]
+    name = row[1]
+    grade = row[2]
+    new_student = self.new(name, grade, id)
     new_student
-  end
-  
-  # def self.new_from_db(row)
-  #   @id = row[0]
-  #   student.name = row[1]
-  #   student.grade = row[2]
-  #   student
-  # end
+  end  
 
-  # def self.all
-  #   sql = <<-SQL
-  #     SELECT *
-  #     FROM students
-  #   SQL
+  def self.find_by_name(name)
+    sql = <<-SQL
+      SELECT *
+      FROM students
+      WHERE name = ?
+      LIMIT 1
+    SQL
  
-  #   DB[:conn].execute(sql).map do |row|
-  #     self.new_from_db(row)
-  #   end
-  # end
-
-  # def self.find_by_name(name)
-  #   sql = <<-SQL
-  #     SELECT *
-  #     FROM students
-  #     WHERE name = ?
-  #     LIMIT 1
-  #   SQL
- 
-  #   DB[:conn].execute(sql, name).map do |row|
-  #     self.new_from_db(row)
-  #   end.first
-  # end
-  
-
+    DB[:conn].execute(sql, name).map do |row|
+      self.new_from_db(row)
+    end.first
   end
+end
