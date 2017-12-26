@@ -3,14 +3,14 @@ require_relative "../config/environment.rb"
 class Student
   # Remember, you can access your database connection anywhere in this class
   #  with DB[:conn]
-  attr_accessor :name, :grade
+  attr_accessor :id, :name, :grade
   @@all = []
 
   def initialize(id=nil, name, grade)
     @id = id
     @name = name
     @grade = grade
-    @all << self
+    @@all << self
   end
 
   def self.create_table
@@ -37,7 +37,7 @@ class Student
     end
   end
 
-  def self.create(:name, :grade)
+  def self.create(name, grade)
     new_student = self.new(name, grade)
     new_student.save
     new_student
@@ -58,8 +58,8 @@ class Student
   end
 
   def update
-    sql = "UPDATE students SET name = ?, grade = ? WHERE name = ?"
-    DB[:conn].execute(sql, self.name, self.grade, self.name)
+    sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?"
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
 
   end
 
