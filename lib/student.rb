@@ -1,8 +1,7 @@
 require_relative "../config/environment.rb"
 
 class Student
-  attr_accessor :name, :grade
-  attr_reader :id
+  attr_accessor :name, :grade, :id
 
   def initialize(id=nil,name,grade)
     @id=id
@@ -51,9 +50,6 @@ class Student
 
   def self.new_from_db(row)
     new_student = Student.new(row[0], row[1], row[2])
-    new_student.id = row[0]
-    new_student.name = row[1]
-    new_student.grade = row[2]
     new_student
   end
 
