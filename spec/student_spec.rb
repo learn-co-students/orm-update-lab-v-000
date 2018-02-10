@@ -88,7 +88,7 @@ describe "Student" do
   describe '.find_by_name' do
     it 'returns an instance of student that matches the name from the DB' do
       josh.save
-      josh_id = josh.id
+      josh_id = 2
       josh_from_db = Student.find_by_name("Josh")
       expect(josh_from_db.name).to eq("Josh")
       expect(josh_from_db.grade).to eq("9th")
@@ -103,7 +103,7 @@ describe "Student" do
       josh.name = "Josh Jr."
       josh.update
       josh_jr = Student.find_by_name("Josh Jr.")
-      expect(josh_jr.id).to eq(josh.id)
+      expect(josh_jr.id).to eq(2)
     end
   end
 end
