@@ -27,7 +27,7 @@ class Student
 
   def save
     if self.id
-      self.udpate
+      self.update
     else
       sql = <<-SQL
       INSERT INTO students (name, grade)
@@ -39,19 +39,33 @@ class Student
     end
   end
 
-  def create
-
-    save
+  def self.create(name, grade)
+    student = Student.new(name, grade)
+    student.save
   end
 
-  def self.new_from_db
-    student = Student.new
+
+  def self.new_from_db(row)
+    self.new(row[0],row[1],row[2])
   end
 
-  def self.find_by_name
+  def self.find_by_name(name)
+    sql = <<-SQL
+    SELECT *
+    FROM students
+    WHERE name = ?
+    LIMIT 1
+
+    SQL
+    DB[:conn].execute(sql,name).map do |row|
+      self.new_from_db(row)
+    end
+    .first
   end
 
   def update
+    sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?"
+    DB[:conn].execute(sql,self.name, self.grade, self.id)
   end
 
 
