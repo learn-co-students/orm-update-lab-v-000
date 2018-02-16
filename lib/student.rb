@@ -4,12 +4,20 @@ class Student
   attr_accessor :id, :name, :grade
 
   def initialize(id = nil, name, grade)
+    @id = id
     @name = name
     @grade = grade
   end
 
   def self.create_table
-    "CREATE TABLE students"
+    sql <<-SQL
+    CREATE TABLE IF NOT EXISTS students (
+    id PRIMARY KEY INTEGER,
+    name TEXT,
+    grade INTEGER
+    )
+    SQL
+    DB[:conn].execute(sql)
   end
 
   def self.drop_table
