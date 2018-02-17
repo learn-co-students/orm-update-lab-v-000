@@ -30,12 +30,15 @@ class Student
    end
 
    def self.create(name, grade)
-      sql = <<-SQL
-      INSERT INTO students (name, grade)
-      VALUES (?, ?)
-      SQL
+      # sql = <<-SQL
+      # INSERT INTO students (name, grade)
+      # VALUES (?, ?)
+      # SQL
+      #
+      # DB[:conn].execute(sql, name, grade)
 
-      DB[:conn].execute(sql, name, grade)
+      student = Student.new(name, grade)
+      student.save
    end
 
    def self.new_from_db(row)
