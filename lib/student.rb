@@ -22,7 +22,7 @@ class Student
   end
 
   def self.drop_table
-    DB[:conn].execute("DROP TABLE students;")
+    DB[:conn].execute("DROP TABLE IF EXISTS students;")
   end
 
   def save
@@ -53,10 +53,11 @@ class Student
     sql = <<-SQL
       SELECT * FROM students
       WHERE name = ?
+      LIMIT 1
     SQL
-    row = DB[:conn].execute(sql, name).flatten
-    student = Student.new_from_db(row)
-    student
+    DB[:conn].execute(sql, name).collect do |row|
+      self.new_from_db(row)
+    end.first
   end
 
   def update
