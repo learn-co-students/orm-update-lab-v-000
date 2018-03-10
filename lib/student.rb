@@ -1,5 +1,7 @@
 require_relative "../config/environment.rb"
 require 'pry'
+
+
 class Student
 
   # Remember, you can access your database connection anywhere in this class
@@ -48,9 +50,11 @@ class Student
  end
 
  def self.new_from_db(row)
-   self.new(row[0], row[1], row[2]) # take first element in row make it id
- end                                # take second element in row make it name
-                                  # take three element in row make it  grade
+   self.new(row[0], row[1], row[2])
+ end
+ #^^^^^ take first element in row make it id
+ # take second element in row make it name
+  # take three element in row make it  grade ^^^#
 
  def self.find_by_name(name)
    sql = "SELECT * FROM students WHERE name = ?"
@@ -58,7 +62,7 @@ class Student
    Student.new(result[0], result[1], result[2])
  end
 
- def update
+  def update
    sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?"
     DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
