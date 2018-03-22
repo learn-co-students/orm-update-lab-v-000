@@ -1,8 +1,7 @@
 require_relative "../config/environment.rb"
 require 'pry'
 class Student
-	attr_accessor :name, :grade 
-	attr_reader :id
+	attr_accessor :name, :grade, :id
 
 	def initialize(name, grade, id = nil)
 		@name = name 
@@ -47,20 +46,29 @@ class Student
   end
 
   def self.new_from_db(row)
-  	self.new(row[1], row[2], row[0])
+  	name = row[1]
+  	grade = row[2]
+  	id = row[0]
+  	self.new(name, grade, id)
   end
 
   def self.find_by_name(name)
-  	sql = "SELECT * FROM students WHERE name = ?"
+  	sql = <<-SQL
+      SELECT *
+      FROM students
+      WHERE name = ?
+      LIMIT 1
+    SQL
 
-  	student = DB[:conn].execute(sql, name)[0]
-  	self.new(student[1], student[2], student[0])
+    DB[:conn].execute(sql,name).map do |row|
+      self.new_from_db(row)
+    end.first
   end
 
-  def update 
-  	sql = "UPDATE students SET name = ?, grade = ? WHERE ID = ?"
-
-  	DB[:conn].execute(sql, self.name, self.grade, self.id)
+  def update
+    sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?"
+    DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
+
 
 end
