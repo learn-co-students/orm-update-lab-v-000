@@ -42,8 +42,9 @@ class Student
   
   #Creates new objects and saves them to the database
   def self.create(name, grade)
-    student = Student.new(name, grade)
+    student = self.new(name, grade)
     student.save
+    student
   end #.create
   
   
