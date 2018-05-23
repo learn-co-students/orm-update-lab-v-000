@@ -7,12 +7,14 @@ class Student
   #  with DB[:conn]
 
   def initialize(name, grade, id = nil)
+  # id defaults to 'nil' on initialization
     @name = name
     @grade = grade
     @id = id
   end
 
   def self.create_table
+  # creates the students table in the database
     sql = <<-SQL
       CREATE TABLE IF NOT EXISTS students (
         id INTEGER PRIMARY KEY,
@@ -24,6 +26,7 @@ class Student
   end
 
   def self.drop_table
+  # drops the students table from the database
     sql = <<-SQL
       DROP TABLE IF EXISTS students
     SQL
@@ -31,6 +34,7 @@ class Student
   end
 
   def update
+  # updates a record if called on an object that is already persisted
     sql = <<-SQL
       UPDATE students
       SET name = ?, grade = ?
@@ -41,6 +45,9 @@ class Student
   end
 
   def save
+  # updates a record if called on an object that is already persisted
+  # saves an instance of the Student class to the database
+  # and then sets the given students `id` attribute
     if self.id
       self.update
     else
@@ -55,11 +62,13 @@ class Student
   end
 
   def self.create(name, grade)
+  # creates a student object with name and grade attributes
     new_student = Student.new(name, grade)
     new_student.save
   end
 
   def self.new_from_db(row)
+  # creates an instance with corresponding attribute values
     id = row[0]
     name = row[1]
     grade = row[2]
@@ -67,6 +76,7 @@ class Student
   end
 
   def self.find_by_name(name)
+  # returns an instance of student that matches the name from the DB
     sql = <<-SQL
       SELECT *
       FROM students
