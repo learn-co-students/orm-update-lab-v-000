@@ -13,7 +13,7 @@ class Student
 
 	def self.create_table
 		sql = <<-SQL
-		CREATE TABLE students (
+		CREATE TABLE IF NOT EXISTS students (
 			id INTEGER PRIMARY KEY,
 			name TEXT,
 			grade INTEGER
@@ -23,7 +23,7 @@ class Student
 	end
 
 	def self.drop_table
-		sql = "DROP TABLE students"
+		sql = "DROP TABLE IF EXISTS students"
 		DB[:conn].execute(sql)
 	end
 
@@ -59,7 +59,7 @@ class Student
 
 	def self.find_by_name(name)
 		#returns an instance of student that matches the name from the DB
-		sql = "SELECT * FROM students WHERE name = ?"
+		sql = "SELECT * FROM students WHERE name = ? LIMIT 1"
 		student = (DB[:conn].execute(sql, name)).flatten
 		student = Student.new(student[0], student[1], student[2])
 	end
