@@ -11,12 +11,15 @@ class Student
   end
 
   def self.create_table
-    sql = "CREATE TABLE students (
-      id INTEGER PRIMARY KEY,
-      name TEXT,
-      grade TEXT)"
+    sql = <<-SQL
+      CREATE TABLE IF NOT EXISTS students (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        grade TEXT
+      )
+    SQL
 
-      DB[:conn].execute(sql);
+    DB[:conn].execute(sql)
   end
 
   def self.drop_table
@@ -26,7 +29,6 @@ class Student
   def self.create(name, grade)
     new_student = self.new(name, grade)
     new_student.save
-    new_student
   end
 
   def self.new_from_db(row)
@@ -37,6 +39,7 @@ class Student
     sql = <<-SQL
       SELECT * FROM students
       WHERE name = ?
+      LIMIT 1
     SQL
 
     student = DB[:conn].execute(sql, name)[0]
@@ -60,7 +63,9 @@ class Student
 
   def update
     sql = <<-SQL
-      UPDATE students SET name = ?, grade = ? WHERE id = ?
+      UPDATE students
+      SET name = ?, grade = ?
+      WHERE id = ?
     SQL
 
     DB[:conn].execute(sql, self.name, self.grade, self.id)
