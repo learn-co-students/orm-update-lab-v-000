@@ -52,8 +52,16 @@ class Student
   end
 
   def self.new_from_db(db)
-    binding.pry
-
+    self.new(db[0], db[1], db[2])
   end
+
+  def self.find_by_name(db)
+    sql = <<-SQL
+      SELECT * FROM students WHERE name = ?
+    SQL
+    found_student = DB[:conn].execute(sql, db)
+    self.new_from_db(found_student.flatten)
+  end
+
 
 end
