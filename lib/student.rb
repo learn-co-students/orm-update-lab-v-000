@@ -50,8 +50,24 @@ attr_reader :id
     end
   end
 
-  def self.create
+  def self.create(name, grade)
+    new = Student.new(name, grade)
+    new.save
+    new
+  end
 
+  def self.new_from_db(row)
+    Student.new(row[1], row[2], row[0])
+  end
+
+  def self.find_by_name(name)
+    sql = <<-SQL
+    SELECT * FROM students WHERE name = ?
+    SQL
+
+    row = DB[:conn].execute(sql, name)
+    new_student = Student.new_from_db(row.flatten)
+    new_student
   end
 
 end
