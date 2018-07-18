@@ -39,11 +39,11 @@ class Student
 
   def self.new_from_db(row)
     DB[:conn].execute("INSERT INTO students (id, name, grade) VALUES (?, ?, ?)", row[0], row[1], row[2])
-    student = self.new(row[0], row[1], row[2])
+    self.new(row[0], row[1], row[2])
   end
 
   def self.find_by_name(name)
-    blah = DB[:conn].execute("SELECT * FROM students WHERE students.name = ?", name).first
-    self.new(blah[0], blah[1], blah[2])
+    student = DB[:conn].execute("SELECT * FROM students WHERE students.name = ?", name).first
+    self.new(student[0], student[1], student[2])
   end
 end
