@@ -4,7 +4,7 @@ class Student
 
   attr_accessor :name, :grade, :id
 
-  def initialize(name, grade, id = nil)
+  def initialize(id = nil, name, grade)
     @name = name
     @grade = grade
     @id = id
@@ -23,6 +23,27 @@ class Student
 
   def self.drop_table
     DB[:conn].execute("DROP TABLE IF EXISTS students")
+  end
+
+  def self.find_by_name(name)
+    sql = <<-SQL
+    SELECT * FROM students
+    WHERE name = ?
+    SQL
+    row_student = DB[:conn].execute(sql, name)[0]
+    self.new_from_db(row_student)
+  end
+
+  def self.create(name, grade)
+    student = Student.new(name, grade)
+    student.save
+    student
+  end
+
+  def self.new_from_db(row)
+    student = Student.new(row[0], row[1], row[2])
+    student.save
+    student
   end
 
   def save
@@ -44,4 +65,5 @@ class Student
     SQL
     DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
+
 end
