@@ -71,7 +71,7 @@ class Student
 end
 
 
-# # Old Lab work from January.
+# # Old Lab work from January and first time through.
 # require_relative "../config/environment.rb"
 # 
 # class Student
