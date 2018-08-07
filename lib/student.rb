@@ -69,7 +69,7 @@ class Student
       SELECT * FROM students WHERE name = ?
       SQL
     student = DB[:conn].execute(sql,name)
-    student_o = Student.new(student[0][0],student[0][1],student[0][2])
+    self.new_from_db(student[0])
 
   end
 end
