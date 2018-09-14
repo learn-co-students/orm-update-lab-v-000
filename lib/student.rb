@@ -8,6 +8,7 @@ class Student
   def initialize(id=nil, name, grade)
     @name = name
     @grade = grade
+    @id = id
   end
 
   def self.create_table
@@ -50,4 +51,28 @@ class Student
 
     DB[:conn].execute(sql, self.name, self.grade, self.id)
   end
+
+  def self.create(name, grade)
+    student = self.new(name, grade)
+    student.save
+
+    student
+  end
+
+  def self.new_from_db(row)
+    self.new(row[0], row[1], row[2])
+  end
+
+  def self.find_by_name(name)
+    sql = <<-SQL
+     SELECT *
+     FROM students
+     WHERE students.name = ?;
+    SQL
+
+    rows = DB[:conn].execute(sql, name)
+    
+    rows.map {|row| self.new_from_db(row) }[0]
+  end
+
 end
