@@ -7,10 +7,13 @@ class Student
   attr_accessor :name, :grade
   attr_reader :id
 
+  @@all = Array.new
+
   def initialize (name, grade, id = nil)
     @name = name
     @grade = grade
     @id = id
+    @@all << self
   end
 
   def self.create_table
@@ -18,7 +21,7 @@ class Student
       CREATE TABLE IF NOT EXISTS students (
         id INTEGER PRIMAY KEY,
         name TEXT,
-        grade INTEGER
+        grade TEXT
       )
       SQL
       DB[:conn].execute(sql)
@@ -56,6 +59,23 @@ class Student
 
     def self.new_from_db(row)
       student = self.new(row[1], row[2], row[0])
+    end
+
+    def self.find_by_name(name)
+      sql = <<-SQL
+        SELECT * FROM students WHERE name = ?
+        SQL
+      id_name_grade = DB[:conn].execute(sql, name).join(",").split(",")
+      our_instance = @@all.detect{|student| student.id == id_name_grade[0].to_i && student.name == id_name_grade[1] && student.grade == id_name_grade[2]}
+    end
+
+    def update
+      sql = <<-SQL
+      UPDATE students SET name = ?, grade = ? WHERE id = ?
+      SQL
+
+      DB[:conn].execute(sql, self.name, self.grade, self.id) 
+
     end
 
 
