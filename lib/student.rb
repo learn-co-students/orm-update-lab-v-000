@@ -36,7 +36,7 @@ attr_reader :id
     else sql = <<-SQL
       INSERT INTO students (name, grade) 
       VALUES (?, ?)
-    SQL
+      SQL
 
       DB[:conn].execute(sql, self.name, self.grade)
       @id = DB[:conn].execute("SELECT last_insert_rowid() FROM students")[0][0]
@@ -44,9 +44,9 @@ attr_reader :id
   end
   
   def self.create(name, grade)
-    song = Student.new(name, grade)
-    song.save
-    song
+    students = Student.new(name, grade)
+    students.save
+    students
   end
   
   def self.new_from_db(row)
