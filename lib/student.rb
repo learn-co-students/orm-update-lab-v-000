@@ -84,7 +84,7 @@ class Student
     x[0] #the .first is a little hard to see, i like this way more
   end
   
-  def update
+  def update #instance method
     sql = <<-SQL 
         UPDATE students 
         SET name = ?, grade = ? 
