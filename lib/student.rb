@@ -1,5 +1,4 @@
 require_relative "../config/environment.rb"
-require 'pry'
 
 class Student
   attr_accessor :name, :grade, :id
@@ -23,7 +22,7 @@ class Student
   end
 
   def self.drop_table
-    sql = "DROP TABLE students"
+    sql = "DROP TABLE IF EXISTS students"
     DB[:conn].execute(sql)
   end
 
@@ -54,7 +53,6 @@ class Student
   def self.create(name, grade)
     student = Student.new(name, grade)
     student.save
-    student
   end
 
   def self.new_from_db(row)
