@@ -5,13 +5,13 @@ class Student
   # Remember, you can access your database connection anywhere in this class
   #  with DB[:conn]
   
-  attr_accessor :name, :grade
-  attr_reader :id
+  attr_accessor :name, :grade, :id
+
   
   def initialize(id=nil, name, grade)
+    @id = id
     @name = name
     @grade = grade
-    @id = id
   end
   
   def self.create_table
@@ -48,18 +48,16 @@ class Student
     end
   end 
     
-  def self.create(name:, grade:)
+  def self.create(name, grade)
     new_student = Student.new(name, grade)
     new_student.save
-    new_student
   end
   
   def self.new_from_db(row)
-   new_student = self.new
-   new_student.id = row[0]
-   new_student.name = row[1]
-   new_student.grade = row[2]
-   new_student
+   id = row[0]
+   name = row[1]
+   grade = row[2]
+   new_student = self.new(id, name, grade)
   end
    
   def self.find_by_name(name)
@@ -70,9 +68,9 @@ class Student
     LIMIT 1
     SQL
   
-    DB[:conn].execute(sql, name).map do |row|
+    DB[:conn].execute(sql,name).map do |row|
       self.new_from_db(row)
-    end
+    end.first
   end
   
   def update
