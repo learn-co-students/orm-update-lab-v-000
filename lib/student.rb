@@ -56,7 +56,6 @@ class Student
   end
   
   def self.new_from_db(row)
-   # binding.pry
     student = Student.new(row[0], row[1], row[2])
     student.id = row[0]
     student.name = row[1] 
@@ -75,10 +74,4 @@ class Student
       self.new_from_db(row)
     end.first
   end
-    
-
-  # Remember, you can access your database connection anywhere in this class
-  #  with DB[:conn]
-
-
 end
