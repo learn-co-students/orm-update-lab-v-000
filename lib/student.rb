@@ -62,19 +62,20 @@ class Student
   end
 
 
-  def self.find_by_name(name, id) 
+  def self.find_by_name(name)
     sql = "SELECT *
     FROM students
     WHERE name = ?"
-    row = DB[:conn].execute(sql, name)
-    self.find_by_name
-
+    DB[:conn].execute(sql, name).map do |r|
+      self.new_from_db(r)
+    end.first    
   end
 
 
   def update
+
     sql = "UPDATE students SET name = ?, grade = ? WHERE id = ?"
-#binding.pry
+
     DB[:conn].execute(sql, self.name, self.grade, self.id)
 
     # This method updates the database row mapped to the given `Student` instance.
