@@ -5,9 +5,9 @@ class Student
   attr_accessor :name, :grade, :id
 
   def initialize(name, grade, id=nil)
+    @id = id
     @name = name
     @grade = grade
-    @id = id
   end
 
   def self.create_table
@@ -24,7 +24,7 @@ class Student
 
   def self.drop_table
     sql = <<-SQL
-      DROP TABLE students
+      DROP TABLE IF EXISTS students
       SQL
 
     DB[:conn].execute(sql)
@@ -35,7 +35,8 @@ class Student
       self.update
     else
     sql = <<-SQL
-      INSERT INTO students (name, grade) VALUES (?, ?)
+      INSERT INTO students (name, grade) 
+      VALUES (?, ?)
       SQL
 
     DB[:conn].execute(sql, self.name, self.grade)
@@ -50,14 +51,17 @@ class Student
   end
 
   def self.new_from_db(row)
-    new_student = self.new(row[1], row[2], row[0])
-    new_student
+    student_id = row[1]
+    student_name = row[2]
+    student_grade = row[0]
+    self.new(student_id, student_name, student_grade)
   end
 
   def self.find_by_name(name)
-    sql = "SELECT * FROM students WHERE name = ?"
-    row = DB[:conn].execute(sql, name)[0]
-    self.new(row[1], row[2], row[0])
+    sql = "SELECT * FROM students WHERE name = ? LIMIT 1"
+    DB[:conn].execute(sql, name).map do |row|
+    self.new_from_db(row)
+    end.first
   end
 
   def update
