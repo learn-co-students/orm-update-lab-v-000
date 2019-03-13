@@ -24,6 +24,8 @@ class Student
     DB[:conn].execute(sql)
   end
   
+  fart all over the place
+  
   def self.drop_table
     sql = "DROP TABLE students"
     
