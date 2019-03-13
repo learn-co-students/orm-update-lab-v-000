@@ -50,7 +50,7 @@ class Student
   end
   
   def self.new_from_db(row)
-    student = self.new(row[0],row[1],row[2])
+    student = Student.new(row[0],row[1],row[2])
     student
   end
   
@@ -58,15 +58,18 @@ class Student
     sql = <<-SQL
       SELECT * FROM students WHERE name = ? LIMIT 1
     SQL
-    
-    DB[:conn].execute(sql, name).map do |row|
-      self.new_from_db(row)
+    array = []
+    DB[:conn].execute(sql, name).each do |row|
+       array << self.new_from_db(row)
     end
+    
+    array[0]
   end
   
   def update
     sql = <<-SQL
-      UPDATE students set name = ?, grade = ?, id = ?
+      UPDATE students
+      SET name = ?, grade = ?, id = ?
     SQL
     
     DB[:conn].execute(sql, self.name, self.grade, self.id)
