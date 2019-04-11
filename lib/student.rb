@@ -48,7 +48,6 @@ class Student
   def self.create(name, grade)
     student = Student.new(name, grade)
     student.save
-    student 
   end 
   
   def self.new_from_db(row)
@@ -66,8 +65,8 @@ class Student
       LIMIT l 
     SQL
     
-    binding.pry
     DB[:conn].execute(sql, name).map do |row|
+      binding.pry 
       self.new_from_db(row)
     end.first 
   end 
