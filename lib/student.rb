@@ -55,7 +55,7 @@ def self.create(name,grade)
 end
 
 def self.new_from_db(array)
-  array
+  array.join(',')
 end
 
 
